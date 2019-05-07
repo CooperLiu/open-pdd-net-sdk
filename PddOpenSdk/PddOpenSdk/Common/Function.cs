@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace PddOpenSdk.Common
 {
-    public class Function
+    class Function
     {
         /// <summary>
         /// 对象转字典

@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 using PddOpenSdk.Common;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -20,15 +20,42 @@ namespace PddOpenSdk.Services
         /// <summary>
         /// 请求接口
         /// </summary>
-        static readonly string ApiUrl = "http://gw-api.pinduoduo.com/api/router";
-        public static string ClientId;
-        public static string ClientSecret;
+        public const string ApiUrl = "http://gw-api.pinduoduo.com/api/router";
+
         /// <summary>
-        /// token
+        /// 拼多多应用Id
         /// </summary>
-        public static string AccessToken;
-        public static string RedirectUri;
-        protected static HttpClient client = new HttpClient() { Timeout = TimeSpan.FromSeconds(10) };
+        public string AppId { get; set; }
+
+        /// <summary>
+        /// 拼多多密钥
+        /// </summary>
+        public string AppSecret { get; set; }
+
+        /// <summary>
+        /// 接口访问令牌
+        /// </summary>
+        public string ApiAccessToken { get; set; }
+
+        /// <summary>
+        /// Http请求
+        /// </summary>
+        public HttpClient ApiHttpClient { get; set; }
+
+
+        private static readonly HttpClient Client = new HttpClient() { Timeout = TimeSpan.FromSeconds(10) };
+
+
+        public PddCommonApi()
+        {
+            ApiHttpClient = Client;
+        }
+
+        public PddCommonApi(HttpClient httpClient)
+        {
+            ApiHttpClient = httpClient;
+        }
+
 
         /// <summary>
         /// post请求封装
@@ -40,23 +67,35 @@ namespace PddOpenSdk.Services
         /// <returns></returns>
         protected async Task<TResult> PostAsync<TModel, TResult>(string type, TModel model)
         {
-            if (string.IsNullOrEmpty(ClientId) || string.IsNullOrEmpty(ClientSecret) || string.IsNullOrEmpty(AccessToken))
+
+            if (string.IsNullOrEmpty(AppId))
             {
-                throw new Exception("请检查是否设置ClientId、ClientSecret及AccessToken");
+                throw new ArgumentNullException(nameof(AppId), "AppId is null");
             }
+
+            if (string.IsNullOrEmpty(AppSecret))
+            {
+                throw new ArgumentNullException(nameof(AppSecret), "AppSerect is null");
+            }
+
+
+            if (string.IsNullOrEmpty(ApiAccessToken))
+            {
+                throw new ArgumentNullException(nameof(ApiAccessToken), "ApiAccessToken is null");
+            }
+
             // 类型转换到字典
             var dic = Function.ToDictionary(model);
             // 添加公共参数
-            dic.Add("access_token", AccessToken);
-            dic.Add("client_id", ClientId);
+            dic.Add("access_token", ApiAccessToken);
+            dic.Add("client_id", AppId);
             dic.Add("data_type", "JSON");
 #if NET452
-            var Unix = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            dic.Add("timestamp", (long)(DateTime.UtcNow-Unix).TotalMilliseconds);
+            var unix = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            dic.Add("timestamp", (long)(DateTime.UtcNow - unix).TotalMilliseconds);
 #endif
 #if NETSTANDARD2_0
             dic.Add("timestamp", DateTimeOffset.Now.ToUnixTimeSeconds());
-
 #endif
 
             if (dic.Keys.Any(k => k == "type"))
@@ -71,16 +110,15 @@ namespace PddOpenSdk.Services
 
             try
             {
-                var response = await client.PostAsync(ApiUrl, data);
+                var response = await Client.PostAsync(ApiUrl, data);
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonResult = await response.Content.ReadAsStringAsync();
                     var jObject = JObject.Parse(jsonResult);
                     if (jObject.TryGetValue("error_response", out var errorResponse))
                     {
-                        // TODO:处理错误信息
-                        Console.WriteLine("错误信息:" + errorResponse.ToString());
-                        File.AppendAllText("error.json", jsonResult + "\r\n");
+                        Debug.WriteLine("错误信息:" + errorResponse.ToString());
+                        Debug.WriteLine("响应体：" + jsonResult);
                         return default;
                     }
                     else
@@ -90,14 +128,13 @@ namespace PddOpenSdk.Services
                 }
                 else
                 {
-                    Console.WriteLine("网络请求错误：" + response.ReasonPhrase + ":" + response.StatusCode);
+                    Debug.WriteLine("网络请求错误：" + response.ReasonPhrase + ":" + response.StatusCode);
                 }
                 return default;
             }
             catch (Exception e)
             {
-                // TODO:异常处理
-                Console.WriteLine(e.Message);
+                Debug.WriteLine(e.Message);
                 return default;
             }
 
@@ -105,10 +142,9 @@ namespace PddOpenSdk.Services
         /// <summary>
         /// 生成签名
         /// </summary>
-        /// <param name="type"></param>
         /// <param name="dic"></param>
         /// <returns></returns>
-        public Dictionary<string, object> BuildSign(Dictionary<string, object> dic)
+        private Dictionary<string, object> BuildSign(Dictionary<string, object> dic)
         {
             var result = new Dictionary<string, object>();
             // 去除空值并排序
@@ -132,48 +168,48 @@ namespace PddOpenSdk.Services
                 signString += item + value.ToString();
                 result.Add(item, value.ToString());
             }
-            signString = ClientSecret + signString + ClientSecret;
-            Console.WriteLine("拼接内容:" + signString);
+            signString = AppSecret + signString + AppSecret;
+            Debug.WriteLine("拼接内容:" + signString);
             // MD5加密
             using (var md5 = MD5.Create())
             {
                 signString = Function.GetMd5Hash(md5, signString).ToUpper();
             }
-            Console.WriteLine("签名:" + signString);
+            Debug.WriteLine("签名:" + signString);
             result.Add("sign", signString);
             return result;
         }
     }
 
-    /// <summary>
-    /// 公共请求参数
-    /// </summary>
-    public class CommonReqeustParams
-    {
-        /// <summary>
-        /// API接口名称
-        /// </summary>
-        public string Type { get; set; }
-        /// <summary>
-        /// POP分配给应用的client_id
-        /// </summary>
-        public string Client_Id { get; set; }
-        /// <summary>
-        /// 通过code获取的access_token(无需授权的接口，该字段不参与sign签名运算)
-        /// </summary>
-        public string Access_Token { get; set; }
-        /// <summary>
-        /// UNIX时间戳
-        /// </summary>
-        public string TimeStamp { get; set; }
-        /// <summary>
-        /// 响应格式，即返回数据的格式，JSON或者XML（二选一），默认JSON，注意是大写
-        /// </summary>
-        public string Data_Type { get; set; } = "JSON";
-        public string Version { get; set; } = "V1";
-        /// <summary>
-        /// API输入参数签名结果，签名算法参考开放平台接入指南第三部分底部
-        /// </summary>
-        public string Sign { get; set; }
-    }
+    ///// <summary>
+    ///// 公共请求参数
+    ///// </summary>
+    //public class CommonReqeustParams
+    //{
+    //    /// <summary>
+    //    /// API接口名称
+    //    /// </summary>
+    //    public string Type { get; set; }
+    //    /// <summary>
+    //    /// POP分配给应用的client_id
+    //    /// </summary>
+    //    public string Client_Id { get; set; }
+    //    /// <summary>
+    //    /// 通过code获取的access_token(无需授权的接口，该字段不参与sign签名运算)
+    //    /// </summary>
+    //    public string Access_Token { get; set; }
+    //    /// <summary>
+    //    /// UNIX时间戳
+    //    /// </summary>
+    //    public string TimeStamp { get; set; }
+    //    /// <summary>
+    //    /// 响应格式，即返回数据的格式，JSON或者XML（二选一），默认JSON，注意是大写
+    //    /// </summary>
+    //    public string Data_Type { get; set; } = "JSON";
+    //    public string Version { get; set; } = "V1";
+    //    /// <summary>
+    //    /// API输入参数签名结果，签名算法参考开放平台接入指南第三部分底部
+    //    /// </summary>
+    //    public string Sign { get; set; }
+    //}
 }

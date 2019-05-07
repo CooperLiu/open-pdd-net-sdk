@@ -1,9 +1,19 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Logisticsticket;
 using PddOpenSdk.Models.Response.Logisticsticket;
 namespace PddOpenSdk.Services.PddApi
 {
     public class LogisticsticketApi : PddCommonApi {
+        public LogisticsticketApi() : base()
+        {
+        }
+
+        public LogisticsticketApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// 客户与机器人的聊天记录获取接口
         /// </summary>

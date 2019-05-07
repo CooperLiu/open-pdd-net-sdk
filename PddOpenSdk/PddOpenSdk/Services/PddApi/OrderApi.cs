@@ -1,9 +1,20 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Order;
 using PddOpenSdk.Models.Response.Order;
 namespace PddOpenSdk.Services.PddApi
 {
     public class OrderApi : PddCommonApi {
+
+        public OrderApi() : base()
+        {
+        }
+
+        public OrderApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// erp打单信息同步
         /// </summary>

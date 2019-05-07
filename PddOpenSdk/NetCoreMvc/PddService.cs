@@ -81,22 +81,13 @@ namespace PddOpenSdk.AspNetCore
         /// 仓储API
         /// </summary>
         public StockApi StockApi { get; set; } = new StockApi();
+
         private readonly IOptions<PddOptions> _options;
 
         public PddService(IOptions<PddOptions> options)
         {
             _options = options;
-            PddCommonApi.ClientId = _options.Value.ClientId;
-            PddCommonApi.ClientSecret = _options.Value.ClientSecret;
-            PddCommonApi.RedirectUri = _options.Value.CallbackUrl;
         }
 
-
-        public void Test()
-        {
-
-            System.Console.WriteLine(PddCommonApi.ClientId);
-
-        }
     }
 }

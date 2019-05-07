@@ -1,9 +1,19 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Ddk;
 using PddOpenSdk.Models.Response.Ddk;
 namespace PddOpenSdk.Services.PddApi
 {
     public class DdkApi : PddCommonApi {
+
+        public DdkApi() : base()
+        {
+        }
+
+        public DdkApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
         /// <summary>
         /// 多多进宝商品详情查询
         /// </summary>

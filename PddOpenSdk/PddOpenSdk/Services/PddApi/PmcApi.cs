@@ -1,9 +1,21 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Pmc;
 using PddOpenSdk.Models.Response.Pmc;
 namespace PddOpenSdk.Services.PddApi
 {
     public class PmcApi : PddCommonApi {
+
+        public PmcApi() : base()
+        {
+        }
+
+        public PmcApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
+
         /// <summary>
         /// 取消用户的消息服务
         /// </summary>

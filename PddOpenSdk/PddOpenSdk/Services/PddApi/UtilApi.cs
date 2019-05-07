@@ -1,9 +1,20 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Util;
 using PddOpenSdk.Models.Response.Util;
 namespace PddOpenSdk.Services.PddApi
 {
     public class UtilApi : PddCommonApi {
+
+        public UtilApi() : base()
+        {
+        }
+
+        public UtilApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// 获取拼多多系统时间
         /// </summary>

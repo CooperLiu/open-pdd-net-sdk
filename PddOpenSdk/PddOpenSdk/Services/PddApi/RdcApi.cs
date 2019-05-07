@@ -1,3 +1,4 @@
+using System.Net.Http;
 using PddOpenSdk.Models.Request.Rdc;
 using PddOpenSdk.Models.Response.Rdc;
 using System.Threading.Tasks;
@@ -5,6 +6,16 @@ namespace PddOpenSdk.Services.PddApi
 {
     public class RdcApi : PddCommonApi
     {
+
+        public RdcApi() : base()
+        {
+        }
+
+        public RdcApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// 取消发货
         /// </summary>

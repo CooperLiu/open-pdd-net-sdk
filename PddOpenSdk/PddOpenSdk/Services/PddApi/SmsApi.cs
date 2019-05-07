@@ -1,9 +1,20 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Sms;
 using PddOpenSdk.Models.Response.Sms;
 namespace PddOpenSdk.Services.PddApi
 {
     public class SmsApi : PddCommonApi {
+
+        public SmsApi() : base()
+        {
+        }
+
+        public SmsApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// 新增人群
         /// </summary>

@@ -1,3 +1,4 @@
+using System.Net.Http;
 using PddOpenSdk.Models.Request.Ddkall;
 using PddOpenSdk.Models.Response.Ddkall;
 using System.Threading.Tasks;
@@ -5,6 +6,15 @@ namespace PddOpenSdk.Services.PddApi
 {
     public class DdkallApi : PddCommonApi
     {
+        public DdkallApi() : base()
+        {
+        }
+
+        public DdkallApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// 查询所有授权的多多客染色订单
         /// </summary>

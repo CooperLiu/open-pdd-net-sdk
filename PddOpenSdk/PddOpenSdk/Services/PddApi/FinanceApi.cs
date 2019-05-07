@@ -1,9 +1,19 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Finance;
 using PddOpenSdk.Models.Response.Finance;
 namespace PddOpenSdk.Services.PddApi
 {
     public class FinanceApi : PddCommonApi {
+        public FinanceApi() : base()
+        {
+        }
+
+        public FinanceApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// 商家货款日账单下载链接查询接口
         /// </summary>

@@ -1,9 +1,19 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Logistics;
 using PddOpenSdk.Models.Response.Logistics;
 namespace PddOpenSdk.Services.PddApi
 {
     public class LogisticsApi : PddCommonApi {
+
+        public LogisticsApi() : base()
+        {
+        }
+
+        public LogisticsApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
         /// <summary>
         /// 获取拼多多标准国家地址库
         /// </summary>

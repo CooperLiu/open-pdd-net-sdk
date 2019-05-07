@@ -1,9 +1,20 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Mall;
 using PddOpenSdk.Models.Response.Mall;
 namespace PddOpenSdk.Services.PddApi
 {
     public class MallApi : PddCommonApi {
+
+        public MallApi() : base()
+        {
+        }
+
+        public MallApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// 查询店铺是否签署多多进宝协议接口
         /// </summary>

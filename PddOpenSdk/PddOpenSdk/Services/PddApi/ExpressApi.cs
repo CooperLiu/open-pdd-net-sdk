@@ -1,3 +1,4 @@
+using System.Net.Http;
 using PddOpenSdk.Models.Request.Express;
 using PddOpenSdk.Models.Response.Express;
 using System.Threading.Tasks;
@@ -5,6 +6,15 @@ namespace PddOpenSdk.Services.PddApi
 {
     public class ExpressApi : PddCommonApi
     {
+        public ExpressApi() : base()
+        {
+        }
+
+        public ExpressApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// 增加仓库
         /// </summary>

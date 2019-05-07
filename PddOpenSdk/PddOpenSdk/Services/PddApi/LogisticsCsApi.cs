@@ -1,3 +1,4 @@
+using System.Net.Http;
 using PddOpenSdk.Models.Request.Logisticscs;
 using PddOpenSdk.Models.Response.Logisticscs;
 using System.Threading.Tasks;
@@ -5,6 +6,15 @@ namespace PddOpenSdk.Services.PddApi
 {
     public class LogisticscsApi : PddCommonApi
     {
+        public LogisticscsApi() : base()
+        {
+        }
+
+        public LogisticscsApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// 客户与机器人的聊天记录获取接口
         /// </summary>

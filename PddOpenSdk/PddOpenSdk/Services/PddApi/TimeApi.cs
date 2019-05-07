@@ -1,3 +1,4 @@
+using System.Net.Http;
 using PddOpenSdk.Models.Request.Time;
 using PddOpenSdk.Models.Response.Time;
 using System.Threading.Tasks;
@@ -5,6 +6,15 @@ namespace PddOpenSdk.Services.PddApi
 {
     public class TimeApi : PddCommonApi
     {
+        public TimeApi() : base()
+        {
+        }
+
+        public TimeApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// 获取拼多多系统时间
         /// </summary>

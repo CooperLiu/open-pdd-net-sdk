@@ -1,9 +1,20 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Stock;
 using PddOpenSdk.Models.Response.Stock;
 namespace PddOpenSdk.Services.PddApi
 {
     public class StockApi : PddCommonApi {
+
+        public StockApi() : base()
+        {
+        }
+
+        public StockApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// 增加仓库
         /// </summary>

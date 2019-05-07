@@ -1,3 +1,4 @@
+using System.Net.Http;
 using PddOpenSdk.Models.Request.Erp;
 using PddOpenSdk.Models.Response.Erp;
 using System.Threading.Tasks;
@@ -5,6 +6,14 @@ namespace PddOpenSdk.Services.PddApi
 {
     public class ErpApi : PddCommonApi
     {
+        public ErpApi() : base()
+        {
+        }
+
+        public ErpApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
         /// <summary>
         /// erp打单信息同步
         /// </summary>

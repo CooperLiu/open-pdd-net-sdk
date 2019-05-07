@@ -1,9 +1,21 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Promotion;
 using PddOpenSdk.Models.Response.Promotion;
 namespace PddOpenSdk.Services.PddApi
 {
     public class PromotionApi : PddCommonApi {
+
+        public PromotionApi() : base()
+        {
+        }
+
+        public PromotionApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
+
         /// <summary>
         /// 关闭批次接口
         /// </summary>

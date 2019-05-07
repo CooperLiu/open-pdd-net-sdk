@@ -1,9 +1,20 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Refund;
 using PddOpenSdk.Models.Response.Refund;
 namespace PddOpenSdk.Services.PddApi
 {
     public class RefundApi : PddCommonApi {
+
+        public RefundApi() : base()
+        {
+        }
+
+        public RefundApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// 取消发货
         /// </summary>

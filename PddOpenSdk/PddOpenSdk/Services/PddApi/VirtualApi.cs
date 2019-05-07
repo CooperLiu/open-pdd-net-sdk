@@ -1,9 +1,20 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Virtual;
 using PddOpenSdk.Models.Response.Virtual;
 namespace PddOpenSdk.Services.PddApi
 {
     public class VirtualApi : PddCommonApi {
+
+        public VirtualApi() : base()
+        {
+        }
+
+        public VirtualApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// 虚拟游戏类区服列表接口
         /// </summary>

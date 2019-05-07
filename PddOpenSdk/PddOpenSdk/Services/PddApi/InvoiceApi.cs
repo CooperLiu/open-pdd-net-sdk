@@ -1,9 +1,20 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Invoice;
 using PddOpenSdk.Models.Response.Invoice;
 namespace PddOpenSdk.Services.PddApi
 {
     public class InvoiceApi : PddCommonApi {
+
+        public InvoiceApi() : base()
+        {
+        }
+
+        public InvoiceApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// 开票申请单查询
         /// </summary>

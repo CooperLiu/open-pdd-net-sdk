@@ -1,9 +1,20 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Voucher;
 using PddOpenSdk.Models.Response.Voucher;
 namespace PddOpenSdk.Services.PddApi
 {
     public class VoucherApi : PddCommonApi {
+
+        public VoucherApi() : base()
+        {
+        }
+
+        public VoucherApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// 卡券预约提货接口
         /// </summary>

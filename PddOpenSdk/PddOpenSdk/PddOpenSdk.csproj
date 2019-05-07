@@ -25,7 +25,7 @@
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/niltor/open-pdd-net-sdk/dev/logo.ico</PackageIconUrl>
     <Version>1.1.4</Version>
-    <PackageId>MSDev.PddOpenSdk</PackageId>
+    <PackageId>Boss.Scm.PddOpenSdk</PackageId>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Copyright />
   </PropertyGroup>

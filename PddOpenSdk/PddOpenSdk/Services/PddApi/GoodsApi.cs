@@ -1,9 +1,20 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Goods;
 using PddOpenSdk.Models.Response.Goods;
 namespace PddOpenSdk.Services.PddApi
 {
     public class GoodsApi : PddCommonApi {
+
+        public GoodsApi() : base()
+        {
+        }
+
+        public GoodsApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
+
         /// <summary>
         /// 商品列表接口
         /// </summary>

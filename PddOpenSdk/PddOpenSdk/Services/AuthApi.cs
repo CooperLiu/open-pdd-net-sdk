@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -27,48 +28,50 @@ namespace PddOpenSdk.Services.PddApi
         public static readonly string DDKUrl = "https://jinbao.pinduoduo.com/open.html";
 
 
-        public AuthApi()
+        public AuthApi() : base()
         {
 
+        }
+
+        public AuthApi(HttpClient httpClient) : base(httpClient)
+        {
         }
 
         /// <summary>
         /// 获取Token请求
         /// </summary>
+        /// <param name="appId"></param>
+        /// <param name="appSecret"></param>
+        /// <param name="redirectUrl"></param>
         /// <param name="code"></param>
-        /// <param name="redirectUri"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        public async Task<AccessTokenResponseModel> GetAccessTokenAsync(string code, string state = null)
+        public async Task<AccessTokenResponseModel> GetAccessTokenAsync(string appId, string appSecret, string redirectUrl, string code, string state = null)
         {
-            if (code != null)
+            if (string.IsNullOrEmpty(code))
             {
-                // TODO 先读取未过期token，若已过期，则刷新或重新获取
-                var dic = new Dictionary<string, string>
-                {
-                    { "client_id", ClientId },
-                    { "client_secret", ClientSecret },
-                    { "grant_type", "authorization_code" },
-                    { "code", code },
-                    { "redirect_uri", RedirectUri }
-                };
-                if (state != null)
-                {
-                    dic.Add("state", state);
-                }
-
-                var data = new StringContent(JsonConvert.SerializeObject(dic), Encoding.UTF8, "application/json");
-                using (var hc = new HttpClient())
-                {
-                    var response = await hc.PostAsync(TokenUrl, data);
-                    string jsonString = await response.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<AccessTokenResponseModel>(jsonString);
-
-                    AccessToken = result.AccessToken;
-                    return result;
-                }
+                throw new ArgumentNullException(nameof(code), "code is null");
             }
-            return default;
+            var dic = new Dictionary<string, string>
+            {
+                { "client_id", appId },
+                { "client_secret", appSecret },
+                { "grant_type", "authorization_code" },
+                { "code", code },
+                { "redirect_uri", redirectUrl }
+            };
+
+            if (state != null)
+            {
+                dic.Add("state", state);
+            }
+
+            var data = new StringContent(JsonConvert.SerializeObject(dic), Encoding.UTF8, "application/json");
+            var response = await ApiHttpClient.PostAsync(TokenUrl, data);
+            var jsonString = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<AccessTokenResponseModel>(jsonString);
+
+            return result;
         }
 
         /// <summary>
@@ -79,7 +82,7 @@ namespace PddOpenSdk.Services.PddApi
         /// <returns></returns>
         public string GetWebOAuthUrl(string callbackUrl, string state = null)
         {
-            string url = MmsURL + "?response_type=code&client_id=" + ClientId + "&redirect_uri=" + callbackUrl;
+            string url = MmsURL + "?response_type=code&client_id=" + AppId + "&redirect_uri=" + callbackUrl;
             if (!string.IsNullOrEmpty(state))
             {
                 url += "&state=" + state;
@@ -94,22 +97,23 @@ namespace PddOpenSdk.Services.PddApi
         /// <returns></returns>
         public string GetH5OAuthUrl(string callbackUrl, string state = null)
         {
-            string url = MaiURL + "?response_type=code&client_id=" + ClientId + "&redirect_uri=" + callbackUrl + "&view=h5";
+            string url = MaiURL + "?response_type=code&client_id=" + AppId + "&redirect_uri=" + callbackUrl + "&view=h5";
             if (!string.IsNullOrEmpty(state))
             {
                 url += "&state=" + state;
             }
             return url;
         }
+
         /// <summary>
         /// 多多客授权
         /// </summary>
-        /// <param name="callbackUrl"></param>
+        /// <param name="redirectUrl"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        public string GetDDKOAuthUrl(string state = null)
+        public string GetDdkoAuthUrl(string redirectUrl, string state = null)
         {
-            string url = DDKUrl + "?response_type=code&client_id=" + ClientId + "&redirect_uri=" + RedirectUri;
+            string url = DDKUrl + "?response_type=code&client_id=" + AppId + "&redirect_uri=" + redirectUrl;
             if (!string.IsNullOrEmpty(state))
             {
                 url += "&state=" + state;

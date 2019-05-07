@@ -1,9 +1,19 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using PddOpenSdk.Models.Request.Ddkoauth;
 using PddOpenSdk.Models.Response.Ddkoauth;
 namespace PddOpenSdk.Services.PddApi
 {
     public class DdkOauthApi : PddCommonApi {
+
+        public DdkOauthApi() : base()
+        {
+        }
+
+        public DdkOauthApi(HttpClient httpClient) : base(httpClient)
+        {
+
+        }
         /// <summary>
         /// 查询所有授权的多多客订单
         /// </summary>
