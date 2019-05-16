@@ -95,7 +95,7 @@ namespace PddOpenSdk.Services
             dic.Add("timestamp", (long)(DateTime.UtcNow - unix).TotalMilliseconds);
 #endif
 #if NETSTANDARD2_0
-            dic.Add("timestamp", DateTimeOffset.Now.ToUnixTimeSeconds());
+            dic.Add("timestamp", DateTime.Now.ToUnixTimeStampMillis());
 #endif
 
             if (dic.Keys.Any(k => k == "type"))
@@ -119,7 +119,7 @@ namespace PddOpenSdk.Services
                     {
                         Debug.WriteLine("错误信息:" + errorResponse.ToString());
                         Debug.WriteLine("响应体：" + jsonResult);
-                        return default;
+                        return default(TResult);
                     }
                     else
                     {
@@ -130,12 +130,12 @@ namespace PddOpenSdk.Services
                 {
                     Debug.WriteLine("网络请求错误：" + response.ReasonPhrase + ":" + response.StatusCode);
                 }
-                return default;
+                return default(TResult);
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
-                return default;
+                return default(TResult);
             }
 
         }

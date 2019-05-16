@@ -8,12 +8,11 @@ using Newtonsoft.Json;
 
 namespace PddOpenSdk.Common
 {
-    class Function
+    static class Function
     {
         /// <summary>
         /// 对象转字典
         /// </summary>
-        /// <typeparam name="TValue"></typeparam>
         /// <param name="obj"></param>
         /// <param name="sort">排序</param>
         /// <returns></returns>
@@ -49,8 +48,8 @@ namespace PddOpenSdk.Common
         /// <returns></returns>
         public static string ToTitleCase(string words)
         {
-            TextInfo myTI = new CultureInfo("en-US", false).TextInfo;
-            return myTI.ToTitleCase(words);
+            TextInfo myTi = new CultureInfo("en-US", false).TextInfo;
+            return myTi.ToTitleCase(words);
         }
 
 
@@ -85,10 +84,15 @@ namespace PddOpenSdk.Common
                 return false;
             }
         }
+
+        public static long ToUnixTimeStampMillis(this DateTime dateTime)
+        {
+            var startTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return (long)(dateTime - startTime).TotalMilliseconds;
+        }
     }
 
-
-    public enum OrderType
+   public enum OrderType
     {
         NONE,
         ASC,
