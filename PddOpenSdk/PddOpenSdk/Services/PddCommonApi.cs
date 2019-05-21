@@ -23,6 +23,11 @@ namespace PddOpenSdk.Services
         public const string ApiUrl = "http://gw-api.pinduoduo.com/api/router";
 
         /// <summary>
+        /// 店铺Id
+        /// </summary>
+        public string MallId { get; set; }
+
+        /// <summary>
         /// 拼多多应用Id
         /// </summary>
         public string AppId { get; set; }
@@ -114,28 +119,16 @@ namespace PddOpenSdk.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonResult = await response.Content.ReadAsStringAsync();
-                    var jObject = JObject.Parse(jsonResult);
-                    if (jObject.TryGetValue("error_response", out var errorResponse))
-                    {
-                        Debug.WriteLine("错误信息:" + errorResponse.ToString());
-                        Debug.WriteLine("响应体：" + jsonResult);
-                        return default(TResult);
-                    }
-                    else
-                    {
-                        return JsonConvert.DeserializeObject<TResult>(jsonResult);
-                    }
+                    return JsonConvert.DeserializeObject<TResult>(jsonResult);
                 }
                 else
                 {
-                    Debug.WriteLine("网络请求错误：" + response.ReasonPhrase + ":" + response.StatusCode);
+                    throw new Exception($"网络请求错误：{ response.ReasonPhrase}:{ response.StatusCode}");
                 }
-                return default(TResult);
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
-                return default(TResult);
+                throw new Exception($"网络请求错误,错误信息:{e.Message}");
             }
 
         }
